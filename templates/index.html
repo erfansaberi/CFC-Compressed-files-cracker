@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Compressed File Cracker</title>
+        <link href="/static/css/styles.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
+    </head>
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button
+            ><!-- Navbar Search-->
+            <!-- Navbar-->
+            <ul class="navbar-nav ml-auto ml-md-0">
+            </ul>
+        </nav>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                                <div class="nav-link h4 mt-4 text-secondary">CFC</div>
+                            <a class="nav-link" href="/">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Dashboard</a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+                <main>
+                    <div class="container-fluid">
+                        <h1 class="mt-4">Dashboard</h1>
+                        {% include 'alert.html' %}
+                        <div class="row">
+                            {% if data.status == 'found' %}
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-success text-white mb-4">
+                                    <div class="card-body">File Extracted! Password: {{data.password}}</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <div class="small text-white">Status</div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% elif data.status == 'notfound' %}
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-danger text-white mb-4">
+                                    <div class="card-body">Password Not Found</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <div class="small text-white">Status</div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% elif data.status == 'working' %}
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-warning text-white mb-4">
+                                    <div class="card-body">Working - Please Refresh page</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <div class="small text-white">Status</div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% elif data.status == 'offline' %}
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-dark text-white mb-4">
+                                    <div class="card-body">Offline</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <div class="small text-white">Status</div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-primary text-white mb-4">
+                                    <div class="card-body">{{ data.done }}</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <div class="small text-white">Total Processes Done</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-warning text-white mb-4">
+                                    <div class="card-body">{{ data.numprocesses }}</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <div class="small text-white">Total Processes</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-danger text-white mb-4">
+                                    <div class="card-body">{{ data.passwordsnum }} - {{ data.totalprogress }} %</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <div class="small text-white">Total Passwords in list - Total Progress</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="card mb-4">
+                                    <div class="card-header"><i class="fas fa-database mr-1"></i>Crack a Compressed File</div>
+                                    <div class="card-body">                                        
+                                        <form action="/crack" enctype=multipart/form-data> 
+                                            <div class="input-group">
+                                                <input class="form-control" type="text" placeholder="Password List path" aria-label="Search"
+                                                    aria-describedby="basic-addon2" name="passpath" />
+                                                <input class="form-control" type="text" placeholder="Compressed File path" aria-label="Search"
+                                                    aria-describedby="basic-addon2" name="zippath" />
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-primary" type="submit">Crack</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <div class="card-header"><i class="fas fa-table mr-1"></i>Running Processes</div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" width="100%" id="dataTable" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>Process ID</th>
+                                                <th>Number of passwords</th>
+                                                <th>Tested Passwords</th>
+                                                <th>Progress</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                                <th>Process ID</th>
+                                                <th>Number of passwords</th>
+                                                <th>Tested Passwords</th>
+                                                <th>Progress</th>
+                                            </tr>
+                                        </tfoot>
+                                        <tbody>
+                                            {% for process in data.processes %}
+                                            {% if process.found %} <tr style="background-color: green;"> {% else %} <tr> {% endif %}
+                                                <td>{{process.processid}}</td>
+                                                <td>{{process.numpasses}}</td>
+                                                <td>{{process.done}}</td>
+                                                <td>{{process.progress}} %</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            {% include 'copyleft.html' %}
+                        </div>
+                    </div>  
+                </footer>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="/static/js/scripts.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        <script src="/static/assets/demo/chart-area-demo.js"></script>
+        <script src="/static/assets/demo/chart-bar-demo.js"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+        <script src="/static/assets/demo/datatables-demo.js"></script>
+        
+    </body>
+    <!-- based on the https://startbootstrap.com/templates/sb-admin/ template -->
+</html>
